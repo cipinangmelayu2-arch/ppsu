@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14532d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>PPSU Cipinang Melayu</title>
+<style>
+:root{--h:#14532d;--hg:#e3f1e8;--o:#c2410c;--og:#fdebe0;--k:#a16207;--kg:#fef3c7;--m:#b91c1c;--t:#18221c;--ab:#5b665f;--g:#d5dcd7;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;font:18px/1.45 system-ui,-apple-system,Roboto,sans-serif;color:var(--t);background:#eef3ef;padding-bottom:88px;-webkit-tap-highlight-color:transparent}
+header{background:var(--h);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:0;z-index:5}
+header small{display:block;color:#bfe0cb;font-size:14px}
+main{padding:14px;max-width:560px;margin:0 auto}
+h2{font-size:22px;margin:4px 0 10px}
+.k{background:#fff;border:1px solid var(--g);border-radius:12px;padding:14px;margin-bottom:12px}
+.k p{margin:6px 0}
+.btn{display:block;width:100%;min-height:60px;border:0;border-radius:12px;background:var(--o);color:#fff;font:700 21px system-ui;padding:12px;margin:8px 0}
+.btn.s{background:#fff;color:var(--h);border:2px solid var(--h)}
+.btn.h{background:var(--h)}
+.btn.m{background:var(--m)}
+.btn.kecil{min-height:46px;font-size:17px}
+.pil{display:inline-block;padding:3px 12px;border-radius:99px;font-size:15px;background:var(--g);margin:2px 4px 2px 0;white-space:nowrap}
+.pil.on{background:var(--hg);color:var(--h);font-weight:700}
+.pil.w{background:var(--kg);color:var(--k);font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.opsi{min-height:56px;border:2px solid var(--g);background:#fff;border-radius:12px;font:600 17px system-ui;padding:8px;color:var(--t)}
+.opsi.pilih{border-color:var(--h);background:var(--hg);color:var(--h)}
+input,textarea{width:100%;font:22px system-ui;padding:12px;border:2px solid var(--g);border-radius:12px;margin:6px 0}
+input:focus,textarea:focus,button:focus-visible{outline:3px solid var(--o);outline-offset:1px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid var(--g);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:14px 4px;font:700 16px system-ui;color:var(--ab)}
+nav button.a{color:var(--h);box-shadow:inset 0 3px 0 var(--h)}
+.toast{position:fixed;left:12px;right:12px;bottom:96px;background:#18221c;color:#fff;padding:14px;border-radius:12px;z-index:9}
+.kt{font-size:15px;color:var(--ab)}
+.pv{width:100%;border-radius:10px;margin:6px 0}
+.hujan{background:var(--kg);border:2px solid var(--k)}
+.stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--g)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<input type="file" id="fk" accept="image/*" capture="environment" hidden>
+<input type="file" id="fg" accept="image/*" hidden>
+<script>
+'use strict';
+const API_URL = 'GANTI_DENGAN_URL_WEB_APP_ANDA';
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+const BLN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+const TAHAP = { 0: '0% Sebelum', 50: '50% Proses', 100: '100% Selesai' };
+const S = { token: localStorage.getItem('tok') || '', data: null, layar: 'beranda', form: null, antrean: [], rk: { periode: 'hari', scope: 'saya', data: null }, pesan: '' };
+let timerToast, sedangSinkron = false;
+
+/* ---------- Pembantu ---------- */
+const sekarang = () => { const d = new Date(), p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()); };
+const tglTeks = s => { const a = s.slice(0, 10).split('-').map(Number); return HARI[new Date(Date.UTC(a[0], a[1] - 1, a[2])).getUTCDay()] + ', ' + a[2] + ' ' + BLN[a[1] - 1] + ' ' + a[0]; };
+const jam = s => s.slice(11, 16).replace(':', '.');
+const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : 'L' + Date.now() + Math.random().toString(16).slice(2, 10));
+function toast(m) { S.pesan = m; render(); clearTimeout(timerToast); timerToast = setTimeout(() => { S.pesan = ''; render(); }, 5000); }
+
+/* ---------- Antrean offline (IndexedDB) ---------- */
+const dbP = new Promise((ok, no) => { const r = indexedDB.open('ppsu', 1); r.onupgradeneeded = () => r.result.createObjectStore('q', { keyPath: 'k', autoIncrement: true }); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); });
+const tx = async (mode, f) => { const d = await dbP; return new Promise((ok, no) => { const t = d.transaction('q', mode); const r = f(t.objectStore('q')); t.oncomplete = () => ok(r.result); t.onerror = () => no(t.error); }); };
+const qAll = () => tx('readonly', s => s.getAll());
+const qAdd = o => tx('readwrite', s => s.add(o));
+const qPut = o => tx('readwrite', s => s.put(o));
+const qDel = k => tx('readwrite', s => s.delete(k));
+
+/* ---------- Server ---------- */
+async function api(o) {
+  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify(Object.assign({ token: S.token }, o)) });
+  const j = await r.json();
+  if (!j.ok) {
+    if (/Sesi habis/.test(j.pesan)) keluar(true);
+    const e = new Error(j.pesan); e.bisnis = true; throw e;
+  }
+  return j;
+}
+
+async function muat() {
+  S.antrean = await qAll();
+  try {
+    if (!navigator.onLine || !S.token) throw 0;
+    S.data = await api({ aksi: 'beranda' });
+    localStorage.setItem('ber', JSON.stringify(S.data));
+  } catch (e) {
+    if (!S.data) S.data = JSON.parse(localStorage.getItem('ber') || 'null');
+    if (e && e.message) toast(e.message);
+  }
+  render();
+}
+
+async function sinkron() {
+  if (sedangSinkron || !navigator.onLine || !S.token) return;
+  sedangSinkron = true;
+  try {
+    for (const q of await qAll()) {
+      if (q.gagal) continue;
+      try {
+        if (q.payload.lat != null && !q.payload.alamat) q.payload.alamat = await alamat(q.payload.lat, q.payload.lng);
+        const j = await api(Object.assign({ aksi: 'simpan_laporan' }, q.payload));
+        await qDel(q.k);
+        if (j.peringatan) toast(j.peringatan);
+      } catch (e) {
+        if (e.bisnis) { q.gagal = e.message; await qPut(q); } else break;
+      }
+    }
+  } finally { sedangSinkron = false; }
+  await muat();
+}
+
+async function alamat(lat, lng) {
+  try {
+    const c = new AbortController(); setTimeout(() => c.abort(), 6000);
+    const r = await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=id&lat=' + lat + '&lon=' + lng, { signal: c.signal });
+    return (await r.json()).display_name || '';
+  } catch (e) { return ''; }
+}
+
+const posisi = () => new Promise(ok => navigator.geolocation
+  ? navigator.geolocation.getCurrentPosition(p => ok({ lat: +p.coords.latitude.toFixed(6), lng: +p.coords.longitude.toFixed(6), akurasi: Math.round(p.coords.accuracy) }), () => ok(null), { enableHighAccuracy: true, timeout: 15000, maximumAge: 20000 })
+  : ok(null));
+
+const muatGambar = src => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
+
+async function kompres(file) {
+  const url = URL.createObjectURL(file);
+  const g = await muatGambar(url);
+  const sk = Math.min(1, 1024 / Math.max(g.naturalWidth, g.naturalHeight));
+  const c = document.createElement('canvas');
+  c.width = Math.round(g.naturalWidth * sk); c.height = Math.round(g.naturalHeight * sk);
+  c.getContext('2d').drawImage(g, 0, 0, c.width, c.height);
+  URL.revokeObjectURL(url);
+  return c.toDataURL('image/jpeg', 0.7);
+}
+
+/* ---------- Tampilan ---------- */
+function head() {
+  const u = S.data && S.data.pengguna, n = S.antrean.length, on = navigator.onLine;
+  return '<header><div><b>' + esc(u ? u.nama : 'PPSU') + '</b><small>' + esc(u ? (u.grup || (u.peran === 'admin' ? 'Admin' : '')) : 'Cipinang Melayu') + '</small></div><span class="pil ' + (on ? 'on' : 'w') + '">' + (on ? 'Online' : 'Offline') + (n ? ' · ' + n + ' menunggu' : '') + '</span></header>';
+}
+const nav = () => '<nav>' + [['beranda', 'Beranda'], ['rekap', 'Rekap'], ['akun', 'Akun']].map(a => '<button data-a="nav" data-v="' + a[0] + '" class="' + (S.layar === a[0] ? 'a' : '') + '">' + a[1] + '</button>').join('') + '</nav>';
+
+function vLogin() {
+  return '<main><h2 style="margin-top:40px">PPSU Cipinang Melayu</h2><div class="k"><p>Masukkan ID dan PIN dari kartu login Anda.</p><label>ID</label><input id="id" autocapitalize="characters" autocomplete="username" placeholder="contoh: K7M2QX"><label>PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="4 angka"><button class="btn" data-a="login">Masuk</button></div></main>' + (S.pesan ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+}
+
+function vPin() {
+  return head() + '<main><h2>Buat PIN baru</h2><div class="k"><p>PIN awal harus diganti. Pilih 4 sampai 6 angka yang mudah Anda ingat.</p><input id="p1" type="password" inputmode="numeric" placeholder="PIN baru"><input id="p2" type="password" inputmode="numeric" placeholder="Ulangi PIN baru"><button class="btn" data-a="gantipin">Simpan PIN</button></div></main>' + (S.pesan ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+}
+
+function kartuLaporan(l) {
+  const sel = [0, 50, 100].map(t => '<span class="pil ' + (l.foto[t] ? 'on' : '') + '">' + TAHAP[t] + '</span>').join('');
+  return '<div class="k"><b>' + esc(l.jenis) + '</b> <span class="pil ' + (l.status === 'Selesai' ? 'on' : 'w') + '">' + esc(l.status) + '</span><div class="kt">' + (l.tipe === 'grup' ? esc(l.grup) + ' · ' : '') + jam(l.dibuat_pada) + ' WIB' + (l.zona ? ' · ' + esc(l.zona) : '') + '</div><div>' + sel + '</div>' +
+    (l.progres < 100 ? '<button class="btn kecil" data-a="tambah" data-id="' + esc(l.laporan_id) + '">Tambah foto ' + (l.foto[0] ? (l.foto[50] ? '100%' : '50%') : '0%') + '</button>' : '') +
+    '<button class="btn kecil s" data-a="bagikan" data-id="' + esc(l.laporan_id) + '">Bagikan ke WhatsApp</button></div>';
+}
+
+function vBeranda() {
+  const d = S.data, u = d.pengguna, j = d.jadwal;
+  let h = '<main>';
+  if (d.modeHujan) h += '<div class="k hujan"><b>Mode hujan aktif</b>' + (d.zona.filter(z => z.tugas_hujan).map(z => '<p>' + esc(z.nama_zona) + ': ' + esc(z.tugas_hujan) + '</p>').join('') || '<p>Pantau genangan di wilayah tugas.</p>') + '</div>';
+  if (u.grup) {
+    h += '<div class="k"><b>Tugas hari ini</b>' + (j ? '<p>' + esc(j.status) + (j.jam_mulai ? ', jam ' + esc(j.jam_mulai) + ' - ' + esc(j.jam_selesai) : '') + (j.keterangan ? '<br>' + esc(j.keterangan) : '') + '</p>' : '<p class="kt">Jadwal hari ini belum diatur admin.</p>') + (d.grup.lokasi_tugas ? '<p>' + esc(d.grup.lokasi_tugas) + '</p>' : '') + d.zona.map(z => '<div class="kt">• <b>' + esc(z.nama_zona) + '</b> ' + esc(z.rute) + '</div>').join('') + '</div>';
+    h += '<button class="btn" data-a="lapor">Lapor kerja</button>';
+    if (u.peran === 'ketua') h += '<button class="btn h" data-a="laporgrup">Lapor untuk grup</button>';
+  }
+  if (u.peran === 'admin' && d.ringkasan) {
+    h += '<div class="k"><b>Ringkasan hari ini</b><p>' + d.ringkasan.laporanHariIni + ' laporan masuk. ' + d.ringkasan.belumLapor.length + ' pegawai belum lapor.</p>' +
+      '<div class="kt">' + d.ringkasan.belumLapor.slice(0, 40).map(p => esc(p.nama) + (p.grup ? ' (' + esc(p.grup) + ')' : '')).join(', ') + '</div>' +
+      '<button class="btn kecil ' + (d.modeHujan ? 'm' : 'h') + '" data-a="hujan">' + (d.modeHujan ? 'Matikan mode hujan' : 'Nyalakan mode hujan') + '</button></div>';
+  }
+  const tunggu = S.antrean;
+  if (tunggu.length) {
+    h += '<h2>Menunggu kirim</h2>' + tunggu.map(q => '<div class="k"><b>' + esc(q.payload.jenis || 'Tambah foto') + '</b> <span class="pil w">' + TAHAP[q.payload.tahap] + '</span><div class="kt">' + (q.gagal ? '<span style="color:var(--m)">Gagal: ' + esc(q.gagal) + '</span>' : 'Akan terkirim otomatis saat ada sinyal.') + '</div>' + (q.gagal ? '<button class="btn kecil m" data-a="hapusq" data-k="' + q.k + '">Hapus</button>' : '') + '</div>').join('') +
+      (navigator.onLine ? '<button class="btn kecil s" data-a="sinkron">Kirim sekarang</button>' : '');
+  }
+  h += '<h2>Laporan hari ini</h2>' + (d.hariIni.length ? d.hariIni.map(kartuLaporan).join('') : '<div class="k kt">Belum ada laporan. Tekan tombol "Lapor kerja" saat mulai bekerja.</div>');
+  return h + '</main>';
+}
+
+function baruForm(tipe, l) {
+  const f = { id: l ? l.laporan_id : uuid(), tipe: tipe, laporan: l || null, tahap: l ? (l.foto[0] ? (l.foto[50] ? 100 : 50) : 0) : 0, jenis: '', zona: '', ket: '', foto: null, waktu: '', pos: null, cari: true, izin: false, anggota: (S.data.anggota || []).map(a => a.id_login) };
+  posisi().then(p => { if (S.form === f) { f.cari = false; if (p) f.pos = p; render(); } });
+  return f;
+}
+
+function vForm() {
+  const f = S.form, d = S.data, L = f.laporan;
+  const gps = f.pos ? '<span class="pil on">Lokasi didapat (±' + f.pos.akurasi + ' m)</span>' : (f.cari ? '<span class="pil">Mencari lokasi…</span>' : '<span class="pil w">Lokasi belum didapat</span> <button class="btn kecil s" data-a="gps">Coba lagi</button>');
+  let h = '<main><button class="btn kecil s" data-a="batal">Kembali</button><h2>' + (L ? esc(L.jenis) : f.tipe === 'grup' ? 'Lapor untuk grup' : 'Lapor kerja') + '</h2>';
+  if (!L) {
+    h += '<div class="k"><b>Pekerjaan apa?</b><div class="grid">' + d.jenis.map(j => '<button class="opsi ' + (f.jenis === j ? 'pilih' : '') + '" data-a="jenis" data-v="' + esc(j) + '">' + esc(j) + '</button>').join('') + '</div></div>';
+    if (d.zona.length) h += '<div class="k"><b>Zona (boleh dikosongkan)</b><div class="grid">' + d.zona.map(z => '<button class="opsi ' + (f.zona === z.nama_zona ? 'pilih' : '') + '" data-a="zona" data-v="' + esc(z.nama_zona) + '">' + esc(z.nama_zona) + '</button>').join('') + '</div></div>';
+    if (f.tipe === 'grup') h += '<div class="k"><b>Siapa yang bekerja?</b><div class="grid">' + (d.anggota || []).map(a => '<button class="opsi ' + (f.anggota.indexOf(a.id_login) >= 0 ? 'pilih' : '') + '" data-a="ang" data-v="' + esc(a.id_login) + '">' + esc(a.nama) + '</button>').join('') + '</div></div>';
+  }
+  h += '<div class="k"><b>Foto</b><div class="grid">' + [0, 50, 100].map(t => '<button class="opsi ' + (f.tahap === t ? 'pilih' : '') + '" data-a="tahap" data-v="' + t + '">' + TAHAP[t] + '</button>').join('') + '</div>' +
+    (f.foto ? '<img class="pv" src="' + f.foto + '" alt="Foto laporan">' : '') +
+    '<button class="btn h" data-a="kamera">' + (f.foto ? 'Foto ulang' : 'Ambil foto') + '</button><button class="btn s kecil" data-a="galeri">Pilih dari galeri</button><p>' + gps + '</p></div>';
+  h += '<div class="k"><b>Keterangan (boleh dikosongkan)</b><textarea rows="3" data-f="ket" placeholder="Contoh: got sepanjang 80 meter sudah bersih">' + esc(f.ket) + '</textarea></div>';
+  return h + '<button class="btn" data-a="kirim">Kirim laporan</button></main>' + (S.pesan ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+}
+
+function vRekap() {
+  const r = S.rk, d = r.data, u = S.data.pengguna;
+  const pil = (k, v, t) => '<button class="opsi ' + (r[k] === v ? 'pilih' : '') + '" data-a="rk" data-k="' + k + '" data-v="' + v + '">' + t + '</button>';
+  let h = '<main><h2>Rekap</h2><div class="grid" style="grid-template-columns:repeat(3,1fr)">' + pil('periode', 'hari', 'Hari') + pil('periode', 'minggu', 'Minggu') + pil('periode', 'bulan', 'Bulan') + '</div>';
+  if (u.peran !== 'anggota') h += '<div class="grid" style="grid-template-columns:repeat(' + (u.peran === 'admin' ? 3 : 2) + ',1fr)">' + pil('scope', 'saya', 'Saya') + pil('scope', 'grup', 'Grup') + (u.peran === 'admin' ? pil('scope', 'semua', 'Semua') : '') + '</div>';
+  if (!d) return h + '<div class="k kt">Memuat rekap…</div></main>';
+  const daf = o => Object.keys(o).sort().map(k => '<div class="stat"><span>' + esc(k) + '</span><b>' + o[k] + '</b></div>').join('') || '<p class="kt">Belum ada data.</p>';
+  h += '<div class="k kt">' + tglTeks(d.dari) + (d.dari !== d.sampai ? ' sampai ' + tglTeks(d.sampai) : '') + '</div>';
+  h += '<div class="k"><div class="stat"><span>Laporan</span><b>' + d.total + '</b></div><div class="stat"><span>Selesai</span><b>' + d.selesai + '</b></div><div class="stat"><span>Hari melapor</span><b>' + d.hariLapor + '</b></div></div>';
+  h += '<div class="k"><b>Per jenis pekerjaan</b>' + daf(d.perJenis) + '</div>';
+  if (d.periode !== 'hari' && d.dari !== d.sampai) h += '<div class="k"><b>Per hari</b>' + daf(d.perHari) + '</div>';
+  if (d.perPegawai) h += '<div class="k"><b>Per pegawai</b>' + daf(d.perPegawai) + '</div>';
+  return h + '</main>';
+}
+
+function vAkun() {
+  const u = S.data.pengguna;
+  return '<main><h2>Akun</h2><div class="k"><p><b>' + esc(u.nama) + '</b></p><p class="kt">ID: ' + esc(u.id_login) + '<br>Grup: ' + esc(u.grup || '-') + '<br>Peran: ' + esc(u.peran) + '</p></div><button class="btn s" data-a="pinbaru">Ganti PIN</button><button class="btn m" data-a="keluar">Keluar</button></main>';
+}
+
+function vBag() {
+  const b = S.bag;
+  return '<main><h2>Kartu laporan siap</h2><img class="pv" src="' + b.url + '" alt="Kartu laporan"><button class="btn" data-a="kirimwa">Kirim ke WhatsApp</button><button class="btn kecil s" data-a="simpangbr">Simpan gambar</button><button class="btn kecil s" data-a="salin">Salin caption</button><button class="btn kecil s" data-a="tutupbag">Tutup</button></main>' + (S.pesan ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+}
+
+function render() {
+  const a = $('#app');
+  if (!S.token) { a.innerHTML = vLogin(); return; }
+  if (!S.data) { a.innerHTML = head() + '<main><div class="k">Memuat data. Untuk pertama kali, pastikan internet aktif.</div></main>'; return; }
+  if (S.data.pengguna.perluGantiPin || S.layar === 'pin') { a.innerHTML = vPin(); return; }
+  if (S.bag) { a.innerHTML = head() + vBag(); return; }
+  const v = S.form ? vForm() : { beranda: vBeranda, rekap: vRekap, akun: vAkun }[S.layar]();
+  a.innerHTML = head() + v + (S.form ? '' : nav()) + (S.pesan && !S.form ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+}
+
+/* ---------- Bagikan ke WhatsApp ---------- */
+function waktuTeks(l) {
+  const w = [l.waktu[0], l.waktu[50], l.waktu[100]].filter(Boolean).sort();
+  const a = w[0] || l.dibuat_pada, b = w[w.length - 1] || a;
+  return tglTeks(a) + ', ' + jam(a) + (b !== a ? ' sampai ' + jam(b) : '') + ' WIB';
+}
+
+function caption(l) {
+  const lk = l.gps ? 'https://maps.google.com/?q=' + l.gps.lat + ',' + l.gps.lng : '';
+  return ['*LAPORAN KERJA PPSU*', 'Kelurahan Cipinang Melayu', '',
+    '*Pekerjaan:* ' + l.jenis + (l.zona ? ' (' + l.zona + ')' : ''),
+    '*Pelapor:* ' + (l.tipe === 'grup' ? l.grup + ' (ketua: ' + l.pelapor + ')' : l.pelapor),
+    l.tipe === 'grup' ? '*Petugas:* ' + l.anggota.join(', ') : '',
+    '*Lokasi:* ' + (l.alamat || '-'), lk ? '*Titik GPS:* ' + lk : '',
+    '*Waktu:* ' + waktuTeks(l), '*Keterangan:* ' + (l.keterangan || '-'),
+    '*Status:* ' + l.status + ' (' + l.progres + '%)'].filter((x, i) => x !== '' || i === 2).join('\n');
+}
+
+function bungkus(x, teks, lebar) {
+  const out = []; let b = '';
+  String(teks).split(' ').forEach(k => { const t = b ? b + ' ' + k : k; if (x.measureText(t).width > lebar && b) { out.push(b); b = k; } else b = t; });
+  out.push(b); return out;
+}
+
+async function kartu(l, imgs) {
+  const W = 1080, c = document.createElement('canvas');
+  const baris = [['Pelapor', l.tipe === 'grup' ? l.grup + ' (ketua: ' + l.pelapor + ')' : l.pelapor]];
+  if (l.tipe === 'grup') baris.push(['Petugas', l.anggota.join(', ')]);
+  baris.push(['Lokasi', l.alamat || '-'], ['Jenis', l.jenis + (l.zona ? ' - ' + l.zona : '')], ['Keterangan', l.keterangan || '-'], ['Waktu', waktuTeks(l)]);
+  c.width = W; c.height = 10;
+  let x = c.getContext('2d'); x.font = '30px system-ui,sans-serif';
+  const isi = baris.map(b => bungkus(x, b[1], 780));
+  const H = 770 + isi.reduce((n, a) => n + a.length * 40 + 14, 0) + 90;
+  c.height = H; x = c.getContext('2d');
+  x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#14532d'; x.fillRect(0, 0, W, 150);
+  x.fillStyle = '#fff'; x.font = '700 46px system-ui,sans-serif'; x.fillText('LAPORAN KERJA PPSU', 40, 70);
+  x.font = '30px system-ui,sans-serif'; x.fillText('Kelurahan Cipinang Melayu', 40, 114);
+  x.fillStyle = '#18221c'; x.font = '700 42px system-ui,sans-serif'; x.fillText(l.jenis, 40, 215);
+  [0, 50, 100].forEach((t, i) => {
+    const px = 40 + i * 340;
+    x.fillStyle = '#e3e8e5'; x.fillRect(px, 250, 320, 420);
+    const g = imgs[i];
+    if (g) { const s = Math.max(320 / g.naturalWidth, 420 / g.naturalHeight), w = g.naturalWidth * s, h = g.naturalHeight * s; x.save(); x.beginPath(); x.rect(px, 250, 320, 420); x.clip(); x.drawImage(g, px + (320 - w) / 2, 250 + (420 - h) / 2, w, h); x.restore(); }
+    else { x.fillStyle = '#5b665f'; x.font = '26px system-ui,sans-serif'; x.fillText('belum ada foto', px + 70, 465); }
+    x.fillStyle = '#18221c'; x.font = '700 28px system-ui,sans-serif'; x.fillText(TAHAP[t], px, 710);
+    x.fillStyle = '#5b665f'; x.font = '24px system-ui,sans-serif'; if (l.waktu[t]) x.fillText(jam(l.waktu[t]) + ' WIB', px, 742);
+  });
+  let y = 805;
+  baris.forEach((b, i) => {
+    x.fillStyle = '#5b665f'; x.font = '26px system-ui,sans-serif'; x.fillText(b[0], 40, y);
+    x.fillStyle = '#18221c'; x.font = '30px system-ui,sans-serif';
+    isi[i].forEach((t, k) => x.fillText(t, 240, y + k * 40)); y += isi[i].length * 40 + 14;
+  });
+  x.fillStyle = l.status === 'Selesai' ? '#14532d' : '#a16207'; x.font = '700 32px system-ui,sans-serif';
+  x.fillText('Status: ' + l.status + ' (' + l.progres + '%)', 40, H - 36);
+  return new Promise(ok => c.toBlob(ok, 'image/jpeg', 0.85));
+}
+
+async function bagikan(id) {
+  const l = S.data.hariIni.find(a => a.laporan_id === id);
+  if (!l) return;
+  if (!navigator.onLine) return toast('Butuh internet untuk menyiapkan kartu.');
+  toast('Menyiapkan kartu…');
+  try {
+    const imgs = [];
+    for (const t of [0, 50, 100]) imgs.push(l.foto[t] ? await muatGambar((await api({ aksi: 'ambil_foto', laporan_id: id, tahap: t })).data) : null);
+    const blob = await kartu(l, imgs);
+    S.bag = { blob: blob, teks: caption(l), url: URL.createObjectURL(blob), file: new File([blob], 'laporan-ppsu.jpg', { type: 'image/jpeg' }) };
+    S.pesan = ''; render();
+  } catch (e) { toast(e.message || 'Kartu gagal dibuat. Coba lagi.'); }
+}
+
+/* ---------- Aksi ---------- */
+function keluar(diam) { S.token = ''; S.data = null; S.form = null; localStorage.removeItem('tok'); localStorage.removeItem('ber'); if (!diam) S.pesan = ''; render(); }
+
+async function kirimForm() {
+  const f = S.form, L = f.laporan;
+  if (!L && !f.jenis) return toast('Pilih jenis pekerjaan dulu.');
+  if (!f.foto) return toast('Foto belum diambil.');
+  if (!f.pos && !f.izin) { f.izin = true; return toast('Lokasi belum didapat. Nyalakan GPS lalu tekan "Coba lagi", atau tekan Kirim sekali lagi untuk kirim tanpa lokasi.'); }
+  const p = f.pos || {};
+  await qAdd({ payload: { laporan_id: f.id, tahap: f.tahap, foto: f.foto, waktu: f.waktu || sekarang(), lat: p.lat == null ? null : p.lat, lng: p.lng == null ? null : p.lng, tipe: L ? L.tipe : f.tipe, jenis: L ? L.jenis : f.jenis, zona: L ? L.zona : f.zona, keterangan: f.ket, anggota: f.anggota } });
+  S.form = null; S.antrean = await qAll(); render();
+  toast(navigator.onLine ? 'Laporan sedang dikirim…' : 'Tersimpan di HP. Akan terkirim saat ada sinyal.');
+  sinkron();
+}
+
+async function muatRekap() {
+  S.rk.data = null; render();
+  try { S.rk.data = await api({ aksi: 'rekap', periode: S.rk.periode, scope: S.rk.scope, grup: S.data.pengguna.grup }); S.rk.data.periode = S.rk.periode; } catch (e) { toast(e.message || 'Rekap butuh internet.'); }
+  render();
+}
+
+const AKSI = {
+  async login() {
+    try { const j = await api({ aksi: 'login', id: $('#id').value, pin: $('#pin').value }); S.token = j.token; localStorage.setItem('tok', j.token); await muat(); sinkron(); }
+    catch (e) { toast(e.message || 'Tidak bisa terhubung. Periksa internet.'); }
+  },
+  async gantipin() {
+    const a = $('#p1').value, b = $('#p2').value;
+    if (a !== b) return toast('Kedua PIN harus sama.');
+    try { await api({ aksi: 'ganti_pin', pin_baru: a }); S.data.pengguna.perluGantiPin = false; S.layar = 'beranda'; toast('PIN sudah diganti.'); } catch (e) { toast(e.message || 'Gagal. Periksa internet.'); }
+  },
+  pinbaru() { S.layar = 'pin'; render(); },
+  keluar() { keluar(); },
+  nav(t) { S.layar = t.dataset.v; if (S.layar === 'rekap') muatRekap(); else render(); },
+  lapor() { S.form = baruForm('individu'); render(); },
+  laporgrup() { S.form = baruForm('grup'); render(); },
+  tambah(t) { S.form = baruForm('individu', S.data.hariIni.find(l => l.laporan_id === t.dataset.id)); render(); },
+  batal() { S.form = null; render(); },
+  jenis(t) { S.form.jenis = t.dataset.v; render(); },
+  zona(t) { S.form.zona = S.form.zona === t.dataset.v ? '' : t.dataset.v; render(); },
+  tahap(t) { S.form.tahap = +t.dataset.v; render(); },
+  ang(t) { const a = S.form.anggota, i = a.indexOf(t.dataset.v); if (i >= 0) a.splice(i, 1); else a.push(t.dataset.v); render(); },
+  kamera() { $('#fk').click(); },
+  galeri() { $('#fg').click(); },
+  gps() { const f = S.form; f.cari = true; render(); posisi().then(p => { if (S.form === f) { f.cari = false; if (p) f.pos = p; render(); } }); },
+  kirim() { kirimForm(); },
+  sinkron() { sinkron(); },
+  async hapusq(t) { await qDel(+t.dataset.k); await muat(); },
+  bagikan(t) { bagikan(t.dataset.id); },
+  kirimwa() {
+    const b = S.bag;
+    if (navigator.canShare && navigator.canShare({ files: [b.file] })) { navigator.share({ files: [b.file], text: b.teks }).catch(() => {}); return; }
+    window.open('https://wa.me/?text=' + encodeURIComponent(b.teks), '_blank');
+    toast('Gambar belum bisa dikirim otomatis. Tekan "Simpan gambar", lalu lampirkan di WhatsApp.');
+  },
+  simpangbr() { const a = document.createElement('a'); a.href = S.bag.url; a.download = 'laporan-ppsu.jpg'; a.click(); },
+  salin() { navigator.clipboard.writeText(S.bag.teks).then(() => toast('Caption disalin.'), () => toast('Caption tidak bisa disalin.')); },
+  tutupbag() { URL.revokeObjectURL(S.bag.url); S.bag = null; render(); },
+  rk(t) { S.rk[t.dataset.k] = t.dataset.v; muatRekap(); },
+  async hujan() {
+    try { await api({ aksi: 'admin_mode_hujan', nilai: S.data.modeHujan ? 'TIDAK' : 'YA' }); await muat(); } catch (e) { toast(e.message || 'Gagal. Periksa internet.'); }
+  }
+};
+
+document.addEventListener('click', e => { const t = e.target.closest('[data-a]'); if (t && AKSI[t.dataset.a]) AKSI[t.dataset.a](t); });
+document.addEventListener('input', e => { if (e.target.dataset.f && S.form) S.form[e.target.dataset.f] = e.target.value; });
+async function fotoDipilih(e) {
+  const file = e.target.files[0]; e.target.value = '';
+  if (!file || !S.form) return;
+  const f = S.form;
+  try { f.foto = await kompres(file); f.waktu = sekarang(); render(); const p = await posisi(); if (p && S.form === f) { f.pos = p; render(); } }
+  catch (x) { toast('Foto tidak bisa dibaca. Coba lagi.'); }
+}
+$('#fk').addEventListener('change', fotoDipilih);
+$('#fg').addEventListener('change', fotoDipilih);
+window.addEventListener('online', () => { render(); sinkron(); });
+window.addEventListener('offline', render);
+setInterval(sinkron, 60000);
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+if (S.token) { muat().then(sinkron); } else render();
+</script>
+</body>
+</html>
