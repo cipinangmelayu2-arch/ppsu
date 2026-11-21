@@ -9,36 +9,68 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>PPSU Cipinang Melayu</title>
 <style>
-:root{--h:#14532d;--hg:#e3f1e8;--o:#c2410c;--og:#fdebe0;--k:#a16207;--kg:#fef3c7;--m:#b91c1c;--t:#18221c;--ab:#5b665f;--g:#d5dcd7;color-scheme:light}
+:root{--h:#14532d;--h2:#1f7a45;--hg:#e3f1e8;--o:#c2410c;--og:#fdebe0;--b:#1d4ed8;--bg:#e2ebfd;--v:#6d28d9;--vg:#ece6fb;--k:#a16207;--kg:#fef3c7;--m:#b91c1c;--mg:#fde4e4;--t:#18221c;--ab:#5b665f;--g:#dfe5e1;color-scheme:light}
 *{box-sizing:border-box}
-body{margin:0;font:18px/1.45 system-ui,-apple-system,Roboto,sans-serif;color:var(--t);background:#eef3ef;padding-bottom:88px;-webkit-tap-highlight-color:transparent}
-header{background:var(--h);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:0;z-index:5}
-header small{display:block;color:#bfe0cb;font-size:14px}
-main{padding:14px;max-width:560px;margin:0 auto}
-h2{font-size:22px;margin:4px 0 10px}
-.k{background:#fff;border:1px solid var(--g);border-radius:12px;padding:14px;margin-bottom:12px}
+body{margin:0;font:17px/1.45 system-ui,-apple-system,Roboto,sans-serif;color:var(--t);background:#f3f8f5 linear-gradient(180deg,#dcece3 0,#f3f8f5 360px) no-repeat;min-height:100vh;padding-bottom:100px;-webkit-tap-highlight-color:transparent}
+main{padding:calc(14px + env(safe-area-inset-top)) 16px 16px;max-width:560px;margin:0 auto}
+h2{font-size:21px;margin:4px 0 12px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:var(--h)}
+.logo i{width:42px;height:42px;border-radius:13px;background:var(--o);color:#fff;display:grid;place-items:center;font:800 12px system-ui;font-style:normal}
+.hai{margin:4px 0 14px}.hai b{display:block;font-size:27px;line-height:1.15}.hai span{color:var(--ab);font-size:15px}
+.k{background:#fff;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 4px 16px rgba(20,83,45,.08)}
 .k p{margin:6px 0}
-.btn{display:block;width:100%;min-height:60px;border:0;border-radius:12px;background:var(--o);color:#fff;font:700 21px system-ui;padding:12px;margin:8px 0}
+.ov{background:linear-gradient(135deg,#14532d,#1f7a45);color:#fff;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 8px 22px rgba(20,83,45,.28)}
+.ov small{opacity:.9;font-size:14px;font-weight:600}
+.st{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:10px;text-align:center}
+.st b{display:block;font-size:26px;line-height:1.15}.st span{font-size:12px;opacity:.92;display:block;line-height:1.2}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.tile{background:#fff;border:0;border-radius:16px;padding:14px 4px 12px;box-shadow:0 4px 14px rgba(20,83,45,.08);font:700 14px/1.2 system-ui;color:var(--t);display:flex;flex-direction:column;align-items:center;gap:8px;min-height:108px}
+.ic{width:50px;height:50px;border-radius:50%;display:grid;place-items:center}
+.ic.o{background:var(--og);color:var(--o)}.ic.h{background:var(--hg);color:var(--h)}.ic.b{background:var(--bg);color:var(--b)}
+.ic.v{background:var(--vg);color:var(--v)}.ic.k{background:var(--kg);color:var(--k)}.ic.m{background:var(--mg);color:var(--m)}.ic.n{background:#e8ece9;color:var(--ab)}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:60px;border:0;border-radius:14px;background:var(--o);color:#fff;font:700 20px system-ui;padding:12px;margin:8px 0}
 .btn.s{background:#fff;color:var(--h);border:2px solid var(--h)}
 .btn.h{background:var(--h)}
 .btn.m{background:var(--m)}
-.btn.kecil{min-height:46px;font-size:17px}
-.pil{display:inline-block;padding:3px 12px;border-radius:99px;font-size:15px;background:var(--g);margin:2px 4px 2px 0;white-space:nowrap}
+.btn.kecil{min-height:48px;font-size:17px}
+.btn:disabled,.opsi:disabled{opacity:.45}
+.load{pointer-events:none;opacity:.8}
+.btn.load::before{content:'';width:20px;height:20px;border:3px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:putar .8s linear infinite}
+.btn.s.load::before{border-color:rgba(20,83,45,.25);border-top-color:var(--h)}
+.tile.load .ic svg{display:none}
+.tile.load .ic::after{content:'';width:24px;height:24px;border:3px solid currentColor;border-top-color:transparent;border-radius:50%;animation:putar .8s linear infinite}
+.gir{display:inline-block;width:16px;height:16px;border:3px solid var(--g);border-top-color:var(--h);border-radius:50%;animation:putar .8s linear infinite;vertical-align:-3px}
+@keyframes putar{to{transform:rotate(360deg)}}
+@keyframes geser{0%{left:-40%}100%{left:100%}}
+.pil{display:inline-block;padding:3px 12px;border-radius:99px;font-size:14px;background:var(--g);margin:2px 4px 2px 0}
 .pil.on{background:var(--hg);color:var(--h);font-weight:700}
 .pil.w{background:var(--kg);color:var(--k);font-weight:700}
+.pil.m{background:var(--mg);color:var(--m);font-weight:700}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
-.opsi{min-height:56px;border:2px solid var(--g);background:#fff;border-radius:12px;font:600 17px system-ui;padding:8px;color:var(--t)}
+.opsi{min-height:56px;border:2px solid var(--g);background:#fff;border-radius:12px;font:600 16px system-ui;padding:8px;color:var(--t)}
 .opsi.pilih{border-color:var(--h);background:var(--hg);color:var(--h)}
-input,textarea{width:100%;font:22px system-ui;padding:12px;border:2px solid var(--g);border-radius:12px;margin:6px 0}
+.no{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--h);color:#fff;font:700 15px system-ui;margin-right:8px}
+label{font-weight:600}
+input,textarea{width:100%;font:22px system-ui;padding:12px;border:2px solid var(--g);border-radius:12px;margin:6px 0 10px}
 input:focus,textarea:focus,button:focus-visible{outline:3px solid var(--o);outline-offset:1px}
-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid var(--g);padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;border:0;background:none;padding:14px 4px;font:700 16px system-ui;color:var(--ab)}
-nav button.a{color:var(--h);box-shadow:inset 0 3px 0 var(--h)}
-.toast{position:fixed;left:12px;right:12px;bottom:96px;background:#18221c;color:#fff;padding:14px;border-radius:12px;z-index:9}
+nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:536px;margin:0 auto;background:#fff;border-radius:22px;box-shadow:0 8px 28px rgba(20,34,28,.2);display:flex;justify-content:space-around;padding:8px 6px;z-index:6}
+nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font:700 12px system-ui;color:var(--ab);padding:2px 10px}
+nav .ni{width:46px;height:46px;border-radius:50%;display:grid;place-items:center}
+nav button.a{color:var(--h)}nav button.a .ni{background:var(--h);color:#fff}
+.toast{position:fixed;left:14px;right:14px;bottom:104px;background:#18221c;color:#fff;padding:14px;border-radius:14px;z-index:9}
 .kt{font-size:15px;color:var(--ab)}
-.pv{width:100%;border-radius:10px;margin:6px 0}
+.pv{width:100%;border-radius:12px;margin:6px 0}
 .hujan{background:var(--kg);border:2px solid var(--k)}
-.stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--g)}
+.stat{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--g)}
+.ovl{position:fixed;inset:0;background:rgba(20,34,28,.6);display:grid;place-items:center;padding:20px;z-index:20}
+.dlg{background:#fff;border-radius:20px;padding:20px;width:100%;max-width:420px}
+.lg{display:flex;align-items:flex-start;gap:12px;padding:9px 0}
+.bul{flex:none;width:28px;height:28px;border-radius:50%;background:var(--g);display:grid;place-items:center;color:var(--ab);font-weight:700}
+.bul.gir{background:none;border:3px solid var(--g);border-top-color:var(--h);animation:putar .8s linear infinite}
+.bul.ok{background:var(--h);color:#fff}.bul.er{background:var(--m);color:#fff}
+.bar{position:relative;height:8px;border-radius:8px;background:var(--g);overflow:hidden;margin-top:12px}
+.bar i{position:absolute;top:0;bottom:0;width:40%;background:var(--o);border-radius:8px;animation:geser 1.1s ease-in-out infinite}
 </style>
 </head>
 <body>
@@ -53,7 +85,7 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&am
 const HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 const BLN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 const TAHAP = { 0: '0% Sebelum', 50: '50% Proses', 100: '100% Selesai' };
-const S = { token: localStorage.getItem('tok') || '', data: null, layar: 'beranda', form: null, antrean: [], rk: { periode: 'hari', scope: 'saya', data: null }, pesan: '' };
+const S = { token: localStorage.getItem('tok') || '', data: null, layar: 'beranda', form: null, antrean: [], rk: { periode: 'hari', scope: 'saya', data: null }, pesan: '', proses: null };
 let timerToast, sedangSinkron = false;
 
 /* ---------- Pembantu ---------- */
@@ -140,76 +172,130 @@ async function kompres(file) {
 }
 
 /* ---------- Tampilan ---------- */
-function head() {
-  const u = S.data && S.data.pengguna, n = S.antrean.length, on = navigator.onLine;
-  return '<header><div><b>' + esc(u ? u.nama : 'PPSU') + '</b><small>' + esc(u ? (u.grup || (u.peran === 'admin' ? 'Admin' : '')) : 'Cipinang Melayu') + '</small></div><span class="pil ' + (on ? 'on' : 'w') + '">' + (on ? 'Online' : 'Offline') + (n ? ' · ' + n + ' menunggu' : '') + '</span></header>';
+const IC = {
+  home: '<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+  camera: '<path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.5a5 5 0 0 1 4.5 5.5"/>',
+  pin: '<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  rain: '<path d="M17 15H7a4.5 4.5 0 1 1 1.2-8.8A5.5 5.5 0 0 1 18.5 8 3.5 3.5 0 0 1 17 15z"/><path d="M8 19l-1 2M12 19l-1 2M16 19l-1 2"/>',
+  alert: '<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>'
+};
+const ik = (n, z) => '<svg viewBox="0 0 24 24" width="' + (z || 26) + '" height="' + (z || 26) + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + IC[n] + '</svg>';
+const kap = s => String(s || '').toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase());
+const LANG = ['Menyimpan laporan di HP', 'Mengambil alamat dari titik lokasi', 'Mengirim foto dan data ke server'];
+
+function atas() {
+  const n = S.antrean.length, on = navigator.onLine;
+  return '<div class="top"><div class="logo"><i>PPSU</i>Cipinang Melayu</div><span class="pil ' + (on ? 'on' : 'w') + '">' + (on ? 'Online' : 'Offline') + (n ? ' · ' + n + ' menunggu' : '') + '</span></div>';
 }
-const nav = () => '<nav>' + [['beranda', 'Beranda'], ['rekap', 'Rekap'], ['akun', 'Akun']].map(a => '<button data-a="nav" data-v="' + a[0] + '" class="' + (S.layar === a[0] ? 'a' : '') + '">' + a[1] + '</button>').join('') + '</nav>';
+const nav = () => '<nav>' + [['beranda', 'home', 'Beranda'], ['tugas', 'pin', 'Tugas'], ['rekap', 'chart', 'Rekap'], ['akun', 'user', 'Akun']].map(a => '<button data-a="nav" data-v="' + a[0] + '" class="' + (S.layar === a[0] ? 'a' : '') + '"><span class="ni">' + ik(a[1], 24) + '</span>' + a[2] + '</button>').join('') + '</nav>';
 
 function vLogin() {
-  return '<main><h2 style="margin-top:40px">PPSU Cipinang Melayu</h2><div class="k"><p>Masukkan ID dan PIN dari kartu login Anda.</p><label>ID</label><input id="id" autocapitalize="characters" autocomplete="username" placeholder="contoh: K7M2QX"><label>PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="4 angka"><button class="btn" data-a="login">Masuk</button></div></main>' + (S.pesan ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+  return '<main><div class="top"><div class="logo"><i>PPSU</i>Cipinang Melayu</div></div><div class="hai" style="margin-top:36px"><b>Selamat datang</b><span>Masuk dengan ID dan PIN dari kartu login Anda.</span></div><div class="k"><label for="id">ID</label><input id="id" autocapitalize="characters" autocomplete="username" placeholder="contoh: K7M2QX"><label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="4 angka"><button class="btn" data-a="login" data-load="Memeriksa…">Masuk</button></div></main>';
 }
 
 function vPin() {
-  return head() + '<main><h2>Buat PIN baru</h2><div class="k"><p>PIN awal harus diganti. Pilih 4 sampai 6 angka yang mudah Anda ingat.</p><input id="p1" type="password" inputmode="numeric" placeholder="PIN baru"><input id="p2" type="password" inputmode="numeric" placeholder="Ulangi PIN baru"><button class="btn" data-a="gantipin">Simpan PIN</button></div></main>' + (S.pesan ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+  return '<main>' + atas() + '<h2>Buat PIN baru</h2><div class="k"><p>PIN awal harus diganti. Pilih 4 sampai 6 angka yang mudah Anda ingat.</p><input id="p1" type="password" inputmode="numeric" placeholder="PIN baru"><input id="p2" type="password" inputmode="numeric" placeholder="Ulangi PIN baru"><button class="btn" data-a="gantipin" data-load="Menyimpan…">Simpan PIN</button></div></main>';
 }
 
+/* Gabungkan laporan di server dengan yang masih menunggu kirim di HP */
+function gabung() {
+  const peta = {}, hasil = [];
+  S.data.hariIni.forEach(l => {
+    const c = JSON.parse(JSON.stringify(l)); c.tunggu = {};
+    peta[c.laporan_id] = c; hasil.push(c);
+  });
+  S.antrean.forEach(q => {
+    const p = q.payload; let c = peta[p.laporan_id];
+    if (!c) {
+      c = peta[p.laporan_id] = { laporan_id: p.laporan_id, tipe: p.tipe, pelapor: S.data.pengguna.nama, grup: S.data.pengguna.grup, zona: p.zona, jenis: p.jenis, keterangan: p.keterangan, status: 'Menunggu kirim', progres: 0, alamat: '', dibuat_pada: p.waktu, foto: {}, waktu: {}, gps: null, anggota: [], tunggu: {}, lokal: true };
+      hasil.unshift(c);
+    }
+    c.foto[p.tahap] = true; c.tunggu[p.tahap] = q.gagal ? 'gagal' : true; c.waktu[p.tahap] = p.waktu;
+    if (c.lokal) c.progres = Math.max(c.progres, p.tahap);
+  });
+  return hasil;
+}
+const tahapBerikut = l => !l.foto[0] ? 0 : (!l.foto[50] ? 50 : 100);
+
 function kartuLaporan(l) {
-  const sel = [0, 50, 100].map(t => '<span class="pil ' + (l.foto[t] ? 'on' : '') + '">' + TAHAP[t] + '</span>').join('');
+  const sel = [0, 50, 100].map(t => '<span class="pil ' + (l.tunggu[t] === 'gagal' ? 'm' : l.tunggu[t] ? 'w' : l.foto[t] ? 'on' : '') + '">' + TAHAP[t] + (l.tunggu[t] === 'gagal' ? ' (gagal)' : l.tunggu[t] ? ' (menunggu)' : '') + '</span>').join('');
   return '<div class="k"><b>' + esc(l.jenis) + '</b> <span class="pil ' + (l.status === 'Selesai' ? 'on' : 'w') + '">' + esc(l.status) + '</span><div class="kt">' + (l.tipe === 'grup' ? esc(l.grup) + ' · ' : '') + jam(l.dibuat_pada) + ' WIB' + (l.zona ? ' · ' + esc(l.zona) : '') + '</div><div>' + sel + '</div>' +
-    (l.progres < 100 ? '<button class="btn kecil" data-a="tambah" data-id="' + esc(l.laporan_id) + '">Tambah foto ' + (l.foto[0] ? (l.foto[50] ? '100%' : '50%') : '0%') + '</button>' : '') +
-    '<button class="btn kecil s" data-a="bagikan" data-id="' + esc(l.laporan_id) + '">Bagikan ke WhatsApp</button></div>';
+    (!l.foto[100] ? '<button class="btn kecil" data-a="tambah" data-id="' + esc(l.laporan_id) + '">Tambah foto ' + tahapBerikut(l) + '%</button>' : '') +
+    (!l.lokal ? '<button class="btn kecil s" data-a="bagikan" data-id="' + esc(l.laporan_id) + '" data-load="Menyiapkan kartu…">Bagikan ke WhatsApp</button>' : '') + '</div>';
 }
 
 function vBeranda() {
-  const d = S.data, u = d.pengguna, j = d.jadwal;
-  let h = '<main>';
+  const d = S.data, u = d.pengguna, L = gabung(), adm = u.peran === 'admin' && d.ringkasan;
+  const sel = L.filter(l => l.foto[100]).length;
+  let h = '<main>' + atas() + '<div class="hai"><b>Halo, ' + esc(kap(u.nama.split(' ')[0])) + '!</b><span>' + esc(u.grup || (adm ? 'Admin' : '')) + ' · ' + tglTeks(sekarang()) + '</span></div>';
   if (d.modeHujan) h += '<div class="k hujan"><b>Mode hujan aktif</b>' + (d.zona.filter(z => z.tugas_hujan).map(z => '<p>' + esc(z.nama_zona) + ': ' + esc(z.tugas_hujan) + '</p>').join('') || '<p>Pantau genangan di wilayah tugas.</p>') + '</div>';
-  if (u.grup) {
-    h += '<div class="k"><b>Tugas hari ini</b>' + (j ? '<p>' + esc(j.status) + (j.jam_mulai ? ', jam ' + esc(j.jam_mulai) + ' - ' + esc(j.jam_selesai) : '') + (j.keterangan ? '<br>' + esc(j.keterangan) : '') + '</p>' : '<p class="kt">Jadwal hari ini belum diatur admin.</p>') + (d.grup.lokasi_tugas ? '<p>' + esc(d.grup.lokasi_tugas) + '</p>' : '') + d.zona.map(z => '<div class="kt">• <b>' + esc(z.nama_zona) + '</b> ' + esc(z.rute) + '</div>').join('') + '</div>';
-    h += '<button class="btn" data-a="lapor">Lapor kerja</button>';
-    if (u.peran === 'ketua') h += '<button class="btn h" data-a="laporgrup">Lapor untuk grup</button>';
-  }
-  if (u.peran === 'admin' && d.ringkasan) {
-    h += '<div class="k"><b>Ringkasan hari ini</b><p>' + d.ringkasan.laporanHariIni + ' laporan masuk. ' + d.ringkasan.belumLapor.length + ' pegawai belum lapor.</p>' +
-      '<div class="kt">' + d.ringkasan.belumLapor.slice(0, 40).map(p => esc(p.nama) + (p.grup ? ' (' + esc(p.grup) + ')' : '')).join(', ') + '</div>' +
-      '<button class="btn kecil ' + (d.modeHujan ? 'm' : 'h') + '" data-a="hujan">' + (d.modeHujan ? 'Matikan mode hujan' : 'Nyalakan mode hujan') + '</button></div>';
-  }
-  const tunggu = S.antrean;
-  if (tunggu.length) {
-    h += '<h2>Menunggu kirim</h2>' + tunggu.map(q => '<div class="k"><b>' + esc(q.payload.jenis || 'Tambah foto') + '</b> <span class="pil w">' + TAHAP[q.payload.tahap] + '</span><div class="kt">' + (q.gagal ? '<span style="color:var(--m)">Gagal: ' + esc(q.gagal) + '</span>' : 'Akan terkirim otomatis saat ada sinyal.') + '</div>' + (q.gagal ? '<button class="btn kecil m" data-a="hapusq" data-k="' + q.k + '">Hapus</button>' : '') + '</div>').join('') +
-      (navigator.onLine ? '<button class="btn kecil s" data-a="sinkron">Kirim sekarang</button>' : '');
-  }
-  h += '<h2>Laporan hari ini</h2>' + (d.hariIni.length ? d.hariIni.map(kartuLaporan).join('') : '<div class="k kt">Belum ada laporan. Tekan tombol "Lapor kerja" saat mulai bekerja.</div>');
+  const st = adm ? [[d.ringkasan.laporanHariIni, 'Laporan masuk'], [d.ringkasan.belumLapor.length, 'Belum lapor'], [d.modeHujan ? 'Aktif' : 'Mati', 'Mode hujan'], [S.antrean.length, 'Menunggu kirim']]
+    : [[L.length, 'Laporan'], [sel, 'Selesai'], [L.length - sel, 'Proses'], [S.antrean.length, 'Menunggu kirim']];
+  h += '<div class="ov"><small>Ringkasan hari ini</small><div class="st">' + st.map(x => '<div><b>' + x[0] + '</b><span>' + x[1] + '</span></div>').join('') + '</div></div>';
+  const T = [];
+  if (u.grup || !adm) T.push(['lapor', 'camera', 'o', 'Lapor Kerja']);
+  if (u.peran === 'ketua') T.push(['laporgrup', 'users', 'h', 'Lapor Grup']);
+  T.push(['tugas', 'pin', 'v', 'Tugas Saya'], ['rekap', 'chart', 'b', 'Rekap']);
+  if (adm) T.push(['hujan', 'rain', 'k', d.modeHujan ? 'Matikan Hujan' : 'Nyalakan Hujan'], ['belum', 'alert', 'm', 'Belum Lapor']);
+  T.push(['akun', 'user', 'n', 'Akun']);
+  h += '<div class="tl">' + T.map(x => '<button class="tile" data-a="' + (['tugas', 'rekap', 'belum', 'akun'].indexOf(x[0]) >= 0 ? 'nav' : x[0]) + '" data-v="' + x[0] + '"><span class="ic ' + x[2] + '">' + ik(x[1], 26) + '</span>' + x[3] + '</button>').join('') + '</div>';
+  const gagal = S.antrean.filter(q => q.gagal);
+  gagal.forEach(q => { h += '<div class="k"><b>' + esc(q.payload.jenis) + '</b> <span class="pil m">Ditolak server</span><div class="kt">' + esc(q.gagal) + '</div><button class="btn kecil m" data-a="hapusq" data-k="' + q.k + '" data-load="Menghapus…">Hapus dari HP</button></div>'; });
+  if (S.antrean.length > gagal.length && navigator.onLine) h += '<button class="btn kecil s" data-a="sinkron" data-load="Mengirim…">Kirim yang menunggu sekarang</button>';
+  h += '<h2>Laporan hari ini</h2>' + (L.length ? L.map(kartuLaporan).join('') : '<div class="k kt">Belum ada laporan. Tekan "Lapor Kerja" saat mulai bekerja.</div>');
   return h + '</main>';
 }
 
+function vTugas() {
+  const d = S.data, j = d.jadwal;
+  return '<main>' + atas() + '<h2>Tugas Saya</h2><div class="k"><b>Jadwal hari ini</b>' + (j ? '<p>' + esc(j.status) + (j.jam_mulai ? ', jam ' + esc(j.jam_mulai) + ' - ' + esc(j.jam_selesai) : '') + (j.keterangan ? '<br>' + esc(j.keterangan) : '') + '</p>' : '<p class="kt">Jadwal hari ini belum diatur admin.</p>') + '</div>' +
+    '<div class="k"><b>Lokasi tugas' + (d.grup.nama ? ' · ' + esc(d.grup.nama) : '') + '</b>' + (d.grup.lokasi_tugas ? '<p>' + esc(d.grup.lokasi_tugas) + '</p>' : '') +
+    (d.zona.map(z => '<p><b>' + esc(z.nama_zona) + '</b>' + (z.rute ? ': ' + esc(z.rute) : '') + (z.tugas_hujan ? '<br><span class="kt">' + esc(z.tugas_hujan) + '</span>' : '') + '</p>').join('') || (d.grup.lokasi_tugas ? '' : '<p class="kt">Keterangan lokasi belum diisi admin.</p>')) + '</div></main>';
+}
+
+function vBelum() {
+  const r = S.data.ringkasan, l = r ? r.belumLapor : [];
+  return '<main>' + atas() + '<h2>Belum lapor hari ini</h2><div class="k">' + (l.length ? l.map(p => '<div class="stat"><span>' + esc(p.nama) + '</span><span class="kt">' + esc(p.grup || '-') + '</span></div>').join('') : '<p class="kt">Semua pegawai sudah melapor.</p>') + '</div></main>';
+}
+
 function baruForm(tipe, l) {
-  const f = { id: l ? l.laporan_id : uuid(), tipe: tipe, laporan: l || null, tahap: l ? (l.foto[0] ? (l.foto[50] ? 100 : 50) : 0) : 0, jenis: '', zona: '', ket: '', foto: null, waktu: '', pos: null, cari: true, izin: false, anggota: (S.data.anggota || []).map(a => a.id_login) };
+  const f = { id: l ? l.laporan_id : uuid(), tipe: tipe, laporan: l || null, tahap: l ? tahapBerikut(l) : 0, jenis: '', zona: '', ket: '', foto: null, kb: 0, waktu: '', pos: null, cari: true, izin: false, anggota: (S.data.anggota || []).map(a => a.id_login) };
   posisi().then(p => { if (S.form === f) { f.cari = false; if (p) f.pos = p; render(); } });
   return f;
 }
 
 function vForm() {
-  const f = S.form, d = S.data, L = f.laporan;
-  const gps = f.pos ? '<span class="pil on">Lokasi didapat (±' + f.pos.akurasi + ' m)</span>' : (f.cari ? '<span class="pil">Mencari lokasi…</span>' : '<span class="pil w">Lokasi belum didapat</span> <button class="btn kecil s" data-a="gps">Coba lagi</button>');
+  const f = S.form, d = S.data, L = f.laporan, ada0 = !!(L && L.foto[0]);
+  const gps = f.pos ? '<span class="pil on">Lokasi didapat (±' + f.pos.akurasi + ' m)</span>' : (f.cari ? '<span class="pil"><span class="gir"></span> Mencari lokasi…</span>' : '<span class="pil w">Lokasi belum didapat</span> <button class="btn kecil s" data-a="gps" data-load="Mencari…">Coba lagi</button>');
   let h = '<main><button class="btn kecil s" data-a="batal">Kembali</button><h2>' + (L ? esc(L.jenis) : f.tipe === 'grup' ? 'Lapor untuk grup' : 'Lapor kerja') + '</h2>';
   if (!L) {
-    h += '<div class="k"><b>Pekerjaan apa?</b><div class="grid">' + d.jenis.map(j => '<button class="opsi ' + (f.jenis === j ? 'pilih' : '') + '" data-a="jenis" data-v="' + esc(j) + '">' + esc(j) + '</button>').join('') + '</div></div>';
-    if (d.zona.length) h += '<div class="k"><b>Zona (boleh dikosongkan)</b><div class="grid">' + d.zona.map(z => '<button class="opsi ' + (f.zona === z.nama_zona ? 'pilih' : '') + '" data-a="zona" data-v="' + esc(z.nama_zona) + '">' + esc(z.nama_zona) + '</button>').join('') + '</div></div>';
-    if (f.tipe === 'grup') h += '<div class="k"><b>Siapa yang bekerja?</b><div class="grid">' + (d.anggota || []).map(a => '<button class="opsi ' + (f.anggota.indexOf(a.id_login) >= 0 ? 'pilih' : '') + '" data-a="ang" data-v="' + esc(a.id_login) + '">' + esc(a.nama) + '</button>').join('') + '</div></div>';
+    h += '<div class="k"><b><span class="no">1</span>Pekerjaan apa?</b><div class="grid">' + d.jenis.map(j => '<button class="opsi ' + (f.jenis === j ? 'pilih' : '') + '" data-a="jenis" data-v="' + esc(j) + '">' + esc(j) + '</button>').join('') + '</div></div>';
+    if (d.zona.length) h += '<div class="k"><b><span class="no">2</span>Zona (boleh dikosongkan)</b><div class="grid">' + d.zona.map(z => '<button class="opsi ' + (f.zona === z.nama_zona ? 'pilih' : '') + '" data-a="zona" data-v="' + esc(z.nama_zona) + '">' + esc(z.nama_zona) + '</button>').join('') + '</div></div>';
+    if (f.tipe === 'grup') h += '<div class="k"><b><span class="no">3</span>Siapa yang bekerja?</b><div class="grid">' + (d.anggota || []).map(a => '<button class="opsi ' + (f.anggota.indexOf(a.id_login) >= 0 ? 'pilih' : '') + '" data-a="ang" data-v="' + esc(a.id_login) + '">' + esc(a.nama) + '</button>').join('') + '</div></div>';
   }
-  h += '<div class="k"><b>Foto</b><div class="grid">' + [0, 50, 100].map(t => '<button class="opsi ' + (f.tahap === t ? 'pilih' : '') + '" data-a="tahap" data-v="' + t + '">' + TAHAP[t] + '</button>').join('') + '</div>' +
-    (f.foto ? '<img class="pv" src="' + f.foto + '" alt="Foto laporan">' : '') +
+  h += '<div class="k"><b>Foto pekerjaan</b><div class="grid" style="grid-template-columns:repeat(3,1fr)">' + [0, 50, 100].map(t => '<button class="opsi ' + (f.tahap === t ? 'pilih' : '') + '" data-a="tahap" data-v="' + t + '"' + (t === 0 || ada0 ? '' : ' disabled') + '>' + TAHAP[t].replace(' ', '<br>') + '</button>').join('') + '</div>' +
+    (ada0 ? '' : '<p class="kt">Foto 0% (sebelum) harus diambil dulu. Foto 50% dan 100% terbuka setelah itu.</p>') +
+    (f.foto ? '<img class="pv" src="' + f.foto + '" alt="Foto laporan"><p class="kt">Foto siap, ukuran ±' + f.kb + ' KB (sudah dikecilkan).</p>' : '') +
     '<button class="btn h" data-a="kamera">' + (f.foto ? 'Foto ulang' : 'Ambil foto') + '</button><button class="btn s kecil" data-a="galeri">Pilih dari galeri</button><p>' + gps + '</p></div>';
   h += '<div class="k"><b>Keterangan (boleh dikosongkan)</b><textarea rows="3" data-f="ket" placeholder="Contoh: got sepanjang 80 meter sudah bersih">' + esc(f.ket) + '</textarea></div>';
-  return h + '<button class="btn" data-a="kirim">Kirim laporan</button></main>' + (S.pesan ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+  return h + '<button class="btn" data-a="kirim" data-load="Mengirim…">Kirim laporan</button></main>';
+}
+
+function vProses() {
+  const p = S.proses;
+  const ikon = s => ({ 0: '<span class="bul"></span>', 1: '<span class="bul gir"></span>', 2: '<span class="bul ok">' + ik('check', 16) + '</span>', 3: '<span class="bul">-</span>', 4: '<span class="bul er">!</span>' })[s];
+  return '<div class="ovl"><div class="dlg"><h2>' + (p.selesai ? 'Selesai' : 'Mengirim laporan') + '</h2>' + LANG.map((t, i) => '<div class="lg">' + ikon(p.st[i]) + '<div>' + t + (p.st[i] === 3 ? '<div class="kt">Dilewati, menunggu sinyal</div>' : '') + (i === 2 && p.st[2] === 1 ? '<div class="kt">Foto ±' + p.kb + ' KB. Mohon jangan tutup aplikasi.</div>' : '') + '</div></div>').join('') +
+    (p.selesai ? '<p><b>' + esc(p.hasil) + '</b></p><button class="btn" data-a="tutupproses" data-load="Memuat…">Oke</button>' : '<div class="bar"><i></i></div>') + '</div></div>';
 }
 
 function vRekap() {
   const r = S.rk, d = r.data, u = S.data.pengguna;
   const pil = (k, v, t) => '<button class="opsi ' + (r[k] === v ? 'pilih' : '') + '" data-a="rk" data-k="' + k + '" data-v="' + v + '">' + t + '</button>';
-  let h = '<main><h2>Rekap</h2><div class="grid" style="grid-template-columns:repeat(3,1fr)">' + pil('periode', 'hari', 'Hari') + pil('periode', 'minggu', 'Minggu') + pil('periode', 'bulan', 'Bulan') + '</div>';
+  let h = '<main>' + atas() + '<h2>Rekap</h2><div class="grid" style="grid-template-columns:repeat(3,1fr)">' + pil('periode', 'hari', 'Hari') + pil('periode', 'minggu', 'Minggu') + pil('periode', 'bulan', 'Bulan') + '</div>';
   if (u.peran !== 'anggota') h += '<div class="grid" style="grid-template-columns:repeat(' + (u.peran === 'admin' ? 3 : 2) + ',1fr)">' + pil('scope', 'saya', 'Saya') + pil('scope', 'grup', 'Grup') + (u.peran === 'admin' ? pil('scope', 'semua', 'Semua') : '') + '</div>';
   if (!d) return h + '<div class="k kt">Memuat rekap…</div></main>';
   const daf = o => Object.keys(o).sort().map(k => '<div class="stat"><span>' + esc(k) + '</span><b>' + o[k] + '</b></div>').join('') || '<p class="kt">Belum ada data.</p>';
@@ -223,22 +309,24 @@ function vRekap() {
 
 function vAkun() {
   const u = S.data.pengguna;
-  return '<main><h2>Akun</h2><div class="k"><p><b>' + esc(u.nama) + '</b></p><p class="kt">ID: ' + esc(u.id_login) + '<br>Grup: ' + esc(u.grup || '-') + '<br>Peran: ' + esc(u.peran) + '</p></div><button class="btn s" data-a="pinbaru">Ganti PIN</button><button class="btn m" data-a="keluar">Keluar</button></main>';
+  return '<main>' + atas() + '<h2>Akun</h2><div class="k"><p><b>' + esc(kap(u.nama)) + '</b></p><p class="kt">ID: ' + esc(u.id_login) + '<br>Grup: ' + esc(u.grup || '-') + '<br>Peran: ' + esc(u.peran) + '</p></div><button class="btn s" data-a="pinbaru">Ganti PIN</button><button class="btn m" data-a="keluar">Keluar</button></main>';
 }
 
 function vBag() {
   const b = S.bag;
-  return '<main><h2>Kartu laporan siap</h2><img class="pv" src="' + b.url + '" alt="Kartu laporan"><button class="btn" data-a="kirimwa">Kirim ke WhatsApp</button><button class="btn kecil s" data-a="simpangbr">Simpan gambar</button><button class="btn kecil s" data-a="salin">Salin caption</button><button class="btn kecil s" data-a="tutupbag">Tutup</button></main>' + (S.pesan ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+  return '<main><h2>Kartu laporan siap</h2><img class="pv" src="' + b.url + '" alt="Kartu laporan"><button class="btn" data-a="kirimwa">Kirim ke WhatsApp</button><button class="btn kecil s" data-a="simpangbr">Simpan gambar</button><button class="btn kecil s" data-a="salin">Salin caption</button><button class="btn kecil s" data-a="tutupbag">Tutup</button></main>';
 }
 
 function render() {
   const a = $('#app');
-  if (!S.token) { a.innerHTML = vLogin(); return; }
-  if (!S.data) { a.innerHTML = head() + '<main><div class="k">Memuat data. Untuk pertama kali, pastikan internet aktif.</div></main>'; return; }
-  if (S.data.pengguna.perluGantiPin || S.layar === 'pin') { a.innerHTML = vPin(); return; }
-  if (S.bag) { a.innerHTML = head() + vBag(); return; }
-  const v = S.form ? vForm() : { beranda: vBeranda, rekap: vRekap, akun: vAkun }[S.layar]();
-  a.innerHTML = head() + v + (S.form ? '' : nav()) + (S.pesan && !S.form ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
+  if (S.proses) { a.innerHTML = vProses(); return; }
+  let v;
+  if (!S.token) v = vLogin();
+  else if (!S.data) v = '<main>' + atas() + '<div class="k">Memuat data… Untuk pertama kali, pastikan internet aktif.</div></main>';
+  else if (S.data.pengguna.perluGantiPin || S.layar === 'pin') v = vPin();
+  else if (S.bag) v = vBag();
+  else v = (S.form ? vForm() : { beranda: vBeranda, tugas: vTugas, rekap: vRekap, belum: vBelum, akun: vAkun }[S.layar]()) + (S.form ? '' : nav());
+  a.innerHTML = v + (S.pesan ? '<div class="toast">' + esc(S.pesan) + '</div>' : '');
 }
 
 /* ---------- Bagikan ke WhatsApp ---------- */
@@ -320,13 +408,28 @@ function keluar(diam) { S.token = ''; S.data = null; S.form = null; localStorage
 async function kirimForm() {
   const f = S.form, L = f.laporan;
   if (!L && !f.jenis) return toast('Pilih jenis pekerjaan dulu.');
+  if (f.tahap !== 0 && !(L && L.foto[0])) return toast('Foto 0% harus diambil dulu sebelum foto 50% atau 100%.');
   if (!f.foto) return toast('Foto belum diambil.');
   if (!f.pos && !f.izin) { f.izin = true; return toast('Lokasi belum didapat. Nyalakan GPS lalu tekan "Coba lagi", atau tekan Kirim sekali lagi untuk kirim tanpa lokasi.'); }
   const p = f.pos || {};
-  await qAdd({ payload: { laporan_id: f.id, tahap: f.tahap, foto: f.foto, waktu: f.waktu || sekarang(), lat: p.lat == null ? null : p.lat, lng: p.lng == null ? null : p.lng, tipe: L ? L.tipe : f.tipe, jenis: L ? L.jenis : f.jenis, zona: L ? L.zona : f.zona, keterangan: f.ket, anggota: f.anggota } });
-  S.form = null; S.antrean = await qAll(); render();
-  toast(navigator.onLine ? 'Laporan sedang dikirim…' : 'Tersimpan di HP. Akan terkirim saat ada sinyal.');
-  sinkron();
+  const q = { payload: { laporan_id: f.id, tahap: f.tahap, foto: f.foto, waktu: f.waktu || sekarang(), lat: p.lat == null ? null : p.lat, lng: p.lng == null ? null : p.lng, tipe: L ? L.tipe : f.tipe, jenis: L ? L.jenis : f.jenis, zona: L ? L.zona : f.zona, keterangan: f.ket, anggota: f.anggota } };
+  const pr = S.proses = { st: [1, 0, 0], kb: f.kb || Math.round(f.foto.length * 0.75 / 1024), selesai: false, hasil: '' };
+  const set = (n, v) => { pr.st[n] = v; render(); };
+  render();
+  try { q.k = await qAdd(q); } catch (e) { pr.selesai = true; pr.st[0] = 4; pr.hasil = 'Laporan gagal disimpan di HP. Ruang penyimpanan HP mungkin penuh.'; render(); return; }
+  S.form = null; set(0, 2);
+  if (!navigator.onLine || sedangSinkron) { set(1, 3); set(2, 3); pr.selesai = true; pr.hasil = 'Tersimpan di HP. Akan terkirim otomatis saat ada sinyal.'; render(); return; }
+  sedangSinkron = true;
+  try {
+    set(1, 1); if (p.lat != null) q.payload.alamat = await alamat(p.lat, p.lng); set(1, 2);
+    set(2, 1); const j = await api(Object.assign({ aksi: 'simpan_laporan' }, q.payload)); await qDel(q.k);
+    set(2, 2); pr.hasil = 'Laporan terkirim.' + (j.peringatan ? ' ' + j.peringatan : '');
+  } catch (e) {
+    set(2, 4);
+    if (e.bisnis) { q.gagal = e.message; await qPut(q); pr.hasil = 'Laporan ditolak server: ' + e.message; }
+    else pr.hasil = 'Sinyal bermasalah. Laporan aman di HP dan akan dicoba lagi otomatis.';
+  } finally { sedangSinkron = false; }
+  pr.selesai = true; render();
 }
 
 async function muatRekap() {
@@ -347,10 +450,10 @@ const AKSI = {
   },
   pinbaru() { S.layar = 'pin'; render(); },
   keluar() { keluar(); },
-  nav(t) { S.layar = t.dataset.v; if (S.layar === 'rekap') muatRekap(); else render(); },
+  nav(t) { S.layar = t.dataset.v; if (S.layar === 'rekap') return muatRekap(); render(); },
   lapor() { S.form = baruForm('individu'); render(); },
   laporgrup() { S.form = baruForm('grup'); render(); },
-  tambah(t) { S.form = baruForm('individu', S.data.hariIni.find(l => l.laporan_id === t.dataset.id)); render(); },
+  tambah(t) { S.form = baruForm('individu', gabung().find(l => l.laporan_id === t.dataset.id)); render(); },
   batal() { S.form = null; render(); },
   jenis(t) { S.form.jenis = t.dataset.v; render(); },
   zona(t) { S.form.zona = S.form.zona === t.dataset.v ? '' : t.dataset.v; render(); },
@@ -358,11 +461,12 @@ const AKSI = {
   ang(t) { const a = S.form.anggota, i = a.indexOf(t.dataset.v); if (i >= 0) a.splice(i, 1); else a.push(t.dataset.v); render(); },
   kamera() { $('#fk').click(); },
   galeri() { $('#fg').click(); },
-  gps() { const f = S.form; f.cari = true; render(); posisi().then(p => { if (S.form === f) { f.cari = false; if (p) f.pos = p; render(); } }); },
-  kirim() { kirimForm(); },
-  sinkron() { sinkron(); },
+  gps() { const f = S.form; f.cari = true; render(); return posisi().then(p => { if (S.form === f) { f.cari = false; if (p) f.pos = p; render(); } }); },
+  kirim() { return kirimForm(); },
+  sinkron() { return sinkron(); },
   async hapusq(t) { await qDel(+t.dataset.k); await muat(); },
-  bagikan(t) { bagikan(t.dataset.id); },
+  bagikan(t) { return bagikan(t.dataset.id); },
+  async tutupproses() { S.proses = null; S.layar = 'beranda'; await muat(); sinkron(); },
   kirimwa() {
     const b = S.bag;
     if (navigator.canShare && navigator.canShare({ files: [b.file] })) { navigator.share({ files: [b.file], text: b.teks }).catch(() => {}); return; }
@@ -372,19 +476,29 @@ const AKSI = {
   simpangbr() { const a = document.createElement('a'); a.href = S.bag.url; a.download = 'laporan-ppsu.jpg'; a.click(); },
   salin() { navigator.clipboard.writeText(S.bag.teks).then(() => toast('Caption disalin.'), () => toast('Caption tidak bisa disalin.')); },
   tutupbag() { URL.revokeObjectURL(S.bag.url); S.bag = null; render(); },
-  rk(t) { S.rk[t.dataset.k] = t.dataset.v; muatRekap(); },
+  rk(t) { S.rk[t.dataset.k] = t.dataset.v; return muatRekap(); },
   async hujan() {
     try { await api({ aksi: 'admin_mode_hujan', nilai: S.data.modeHujan ? 'TIDAK' : 'YA' }); await muat(); } catch (e) { toast(e.message || 'Gagal. Periksa internet.'); }
   }
 };
 
-document.addEventListener('click', e => { const t = e.target.closest('[data-a]'); if (t && AKSI[t.dataset.a]) AKSI[t.dataset.a](t); });
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-a]');
+  if (!t || t.classList.contains('load') || !AKSI[t.dataset.a]) return;
+  const r = AKSI[t.dataset.a](t);
+  if (r && r.then) {
+    t.classList.add('load');
+    if (t.classList.contains('btn')) { t.dataset.asli = t.textContent; t.textContent = t.dataset.load || 'Memproses…'; }
+    r.catch(() => {}).then(() => { t.classList.remove('load'); if (t.dataset.asli) t.textContent = t.dataset.asli; });
+  }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'pin') { const b = document.querySelector('[data-a="login"]'); if (b) b.click(); } });
 document.addEventListener('input', e => { if (e.target.dataset.f && S.form) S.form[e.target.dataset.f] = e.target.value; });
 async function fotoDipilih(e) {
   const file = e.target.files[0]; e.target.value = '';
   if (!file || !S.form) return;
   const f = S.form;
-  try { f.foto = await kompres(file); f.waktu = sekarang(); render(); const p = await posisi(); if (p && S.form === f) { f.pos = p; render(); } }
+  try { f.foto = await kompres(file); f.kb = Math.round(f.foto.length * 0.75 / 1024); f.waktu = sekarang(); render(); const p = await posisi(); if (p && S.form === f) { f.pos = p; render(); } }
   catch (x) { toast('Foto tidak bisa dibaca. Coba lagi.'); }
 }
 $('#fk').addEventListener('change', fotoDipilih);
